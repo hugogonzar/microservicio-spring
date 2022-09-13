@@ -44,7 +44,7 @@ steps:
       artifactName: 'appJar'
       downloadPath: '$(Pipeline.Workspace)'
 
-   - task: Gradle@3
+  - task: Gradle@3
     inputs:
       gradleWrapperFile: 'gradlew'
       tasks: "build jacocoTestReport"
