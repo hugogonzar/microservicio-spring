@@ -47,7 +47,7 @@ steps:
   - task: SonarCloudPrepare@1
     displayName: 'Code Review'
     inputs:
-      SonarCloud: 'hugogonzar'
+      SonarCloud: 'SonarCloudhg'
       organization: 'hugogonzar'
       scannerMode: 'Other'
       extraProperties: |
