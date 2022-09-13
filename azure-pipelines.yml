@@ -10,9 +10,6 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-  vmImage: ubuntu-latest
-
-steps:
   - task: Gradle@3
     displayName: Build
     inputs:
