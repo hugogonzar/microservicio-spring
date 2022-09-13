@@ -10,10 +10,63 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  vmImage: ubuntu-latest
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+steps:
+  - task: Gradle@3
+    displayName: Build
+    inputs:
+      gradleWrapperFile: 'gradlew'
+      tasks: 'build'
+      publishJUnitResults: true
+      testResultsFiles: '*/TEST-.xml'
+      javaHomeOption: 'JDKVersion'
+      sonarQubeRunAnalysis: false
+      spotBugsAnalysis: false
+  
+  - task: CopyFiles@2
+    displayName: Copia archivos
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)'
+      contents: |
+          */build/libs/.jar
+          */build//.xml
+      targetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publica artefactos
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: appJar
+      publishLocation: 'Container'
+  - task: DownloadBuildArtifacts@0
+    displayName: Descarga Jar
+    inputs:
+      buildType: 'current'
+      downloadType: 'single'
+      artifactName: 'appJar'
+      downloadPath: '$(Pipeline.Workspace)'
+
+  - task: SonarCloudPrepare@1
+    displayName: 'Code Review'
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: 'hugogonzar'
+      scannerMode: 'Other'
+      extraProperties: |
+        sonar.coverage.jacoco.xmlReportPaths=$(Pipeline.Workspace)/appJar/build/reports/jacoco/test/jacocoTestReport.xml
+  
+  - task: Gradle@3
+    inputs:
+      gradleWrapperFile: 'gradlew'
+      tasks: "build jacocoTestReport"
+      javaHomeOption: 'JDKVersion'
+      sonarQubeRunAnalysis: false
+      sqGradlePluginVersionChoice: 'specify'
+      sonarQubeGradlePluginVersion: '3.3'
+    displayName: 'Analyze current Branch'
+      
+  - task: SonarCloudPublish@1
+    inputs:
+      pollingTimeoutSec: '300'
+    displayName: 'Publish Analysis Results'
