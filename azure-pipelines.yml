@@ -69,7 +69,7 @@ steps:
     displayName: 'Publish Analysis Results'
     
   - task: Docker@2
-  inputs:
+   inputs:
     containerRegistry: 'Docker'
     command: 'login'
   displayName: Docker registry login
