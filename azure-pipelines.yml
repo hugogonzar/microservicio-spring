@@ -91,21 +91,21 @@ steps:
      command: 'push'
      tags: 'latest'
     
- - task: KubectlInstaller@0
-   displayName: Install Kubectl
-   inputs:
-    kubectlVersion: 'latest'
+  - task: KubectlInstaller@0
+    displayName: Install Kubectl
+    inputs:
+     kubectlVersion: 'latest'
     
- - task: Kubernetes@1
-   inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'Connect kubernetes'
-    namespace: 'default'
-    command: 'login'
+  - task: Kubernetes@1
+    inputs:
+     connectionType: 'Kubernetes Service Connection'
+     kubernetesServiceEndpoint: 'Connect kubernetes'
+     namespace: 'default'
+     command: 'login'
     
- - task: Kubernetes@1
-   displayName: Kubernetes container deploy
-   inputs:
+  - task: Kubernetes@1
+    displayName: Kubernetes container deploy
+    inputs:
      connectionType: 'Kubernetes Service Connection'
      kubernetesServiceEndpoint: 'Connect kubernetes'
      namespace: 'default'
